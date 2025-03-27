@@ -1,24 +1,55 @@
-# Talos Cluster
+# Kubernetes Talos Cluster
 
-## Create all the necessary files
+## Repository Structure
 
-1. Create the secrets file with:
-
-```bash
-talosctl gen secrets --output-file secrets.yaml
+```
+.
+├── controlplane.yaml           # Control plane node configuration
+├── worker.yaml                 # Worker node configuration
+├── secrets.yaml                # Encrypted secrets file
+├── patches/                    # Talos configuration patches
+│   ├── alpha-installer.yaml
+│   ├── controlplane-scheduling.yaml
+│   ├── disable-default-cni.yaml
+│   ├── disable-kube-proxy.yaml
+│   └── openeps-mount.yaml
+├── kubeconfig                  # Kubernetes cluster access
+└── talosconfig                 # Talos cluster configuration
 ```
 
-2. Create the config file with:
+## Key Components
 
+### Configuration Files
+- `controlplane.yaml`: Control plane node configuration
+- `worker.yaml`: Worker node configuration
+- `talosconfig`: Talos cluster access configuration
+- `kubeconfig`: Kubernetes cluster access
+
+### Patches
+- `alpha-installer.yaml`: Use alpha Talos installer
+- `controlplane-scheduling.yaml`: Allow control plane workload scheduling
+- `disable-default-cni.yaml`: Disable default Container Network Interface
+- `disable-kube-proxy.yaml`: Disable default kube-proxy
+- `openeps-mount.yaml`: Mount OpenEPS volume
+
+## Secrets Management
+
+This repository uses Sops for secrets encryption. Ensure `SOPS_AGE_KEY_FILE` is set to the private key path.
+
+### Sops Commands
 ```bash
-talosctl gen config oracle https://141.147.26.197:6443 --additional-sans 141.147.26.197 --with-secrets secrets.yaml
-```
+# Edit secrets
+sops edit secrets.yaml
 
-3. Decrypt the secrets using `sops` and `age`:
+# Check the encryption status
+sops filestatus secrets.yaml
 
-```bash
-sops -e -i secrets.yaml
-sops -e -i worker.yaml
-sops -e -i controlplane.yaml
-sops -e -i --input-type yaml --output-type yaml talosconfig
+# Encrypt secrets
+sops encrypt secrets.yaml
+
+# Decrypt secrets
+sops decrypt secrets.yaml
 ```
+Specify the `--input-type yaml --output-type yaml` flags when using `sops` with YAML files which don't have the `.yaml` extension.
+
+Use `--in-place` flag to modify files directly when making significant changes.
