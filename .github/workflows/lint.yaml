@@ -1,0 +1,16 @@
+name: YAML Linting
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run YAML Linter
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          format: github

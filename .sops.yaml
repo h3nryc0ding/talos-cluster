@@ -15,3 +15,7 @@ creation_rules:
   - path_regex: kubeconfig
     encrypted_regex: ^client-key-data$
     age: age1sa224kdq8x9qvne5nhcgn074xtkcytvn9nje6sjm0rhs5p5lr59svncpgu
+
+stores:
+  yaml:
+    indent: 2
